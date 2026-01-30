@@ -2,6 +2,10 @@
 
 https://resilienceos.vercel.app/
 
+Team Codoholics Members: Saatvik Raghuvanshi
+                         Dhruv Hajela 
+                         Abhishek Singh Gaur
+
 ## Run Locally
 
 **Prerequisites:**  Node.js
