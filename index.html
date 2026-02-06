@@ -188,6 +188,53 @@
             opacity: 0.5;
             cursor: grabbing;
         }
+
+        /* Print Styles */
+        @media print {
+            header, nav, footer, button, .no-print {
+                display: none !important;
+            }
+            body, #root, main {
+                background: white !important;
+                color: black !important;
+                height: auto !important;
+                overflow: visible !important;
+                width: 100% !important;
+            }
+            .max-w-7xl {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+            .grid {
+                display: block !important;
+            }
+            .grid > div {
+                page-break-inside: avoid;
+                margin-bottom: 2rem !important;
+                border: 1px solid #ccc !important;
+                background: #f9f9f9 !important;
+                color: black !important;
+                padding: 2rem !important;
+                border-radius: 10px !important;
+            }
+            .text-zinc-500, .text-zinc-600, .text-zinc-400 {
+                color: #444 !important;
+            }
+            .bg-zinc-900, .bg-zinc-900\/40, .bg-black\/40 {
+                background: white !important;
+                border: 1px solid #ddd !important;
+            }
+            .text-white {
+                color: black !important;
+            }
+            .bg-blue-500\/5 {
+                background: #f0f7ff !important;
+                border: 1px solid #cce3ff !important;
+            }
+            .transition-all {
+                transition: none !important;
+            }
+        }
     </style>
 <script type="importmap">
 {
@@ -200,7 +247,9 @@
     "leaflet.heat": "https://esm.sh/leaflet.heat@0.2.0",
     "idb": "https://esm.sh/idb@8.0.2",
     "react-dnd": "https://esm.sh/react-dnd@16.0.1",
-    "react-dnd-html5-backend": "https://esm.sh/react-dnd-html5-backend@16.0.1"
+    "react-dnd-html5-backend": "https://esm.sh/react-dnd-html5-backend@16.0.1",
+    "jspdf": "https://esm.sh/jspdf@2.5.1",
+    "jspdf-autotable": "https://esm.sh/jspdf-autotable@3.8.2"
   }
 }
 </script>
