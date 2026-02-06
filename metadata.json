@@ -2,6 +2,7 @@
   "name": "Resilience-OS",
   "description": "A Unified Disaster Resilience Platform for authorities, responders, and civilians during flood disasters.",
   "requestFramePermissions": [
-    "geolocation"
+    "geolocation",
+    "camera"
   ]
 }

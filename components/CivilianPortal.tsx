@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Severity, SOSAlert, GeoLocation } from '../types';
+import FaceScanner from './FaceScanner';
 
 interface CivilianPortalProps {
   onSendSOS: (alert: SOSAlert) => void;
@@ -14,31 +15,43 @@ const CivilianPortal: React.FC<CivilianPortalProps> = ({ onSendSOS, currentUserL
   const [name, setName] = useState('');
   const [isSending, setIsSending] = useState(false);
   const [sent, setSent] = useState(false);
+  const [showFaceScan, setShowFaceScan] = useState(false);
 
   const isLight = theme === 'light';
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSending(true);
-
-    const performSend = (loc: GeoLocation) => {
-      const sosAlert: SOSAlert = {
-        id: Math.random().toString(36).substr(2, 9),
-        citizenName: name || 'Anonymous',
-        message: message || 'Urgent assistance required.',
-        severity,
-        location: loc,
-        timestamp: Date.now(),
-        status: 'pending'
-      };
-
-      setTimeout(() => {
-        onSendSOS(sosAlert);
-        setIsSending(false);
-        setSent(true);
-      }, 1200);
+  const performSend = (loc: GeoLocation, note: string = '') => {
+    const sosAlert: SOSAlert = {
+      id: Math.random().toString(36).substr(2, 9),
+      citizenName: name || 'Anonymous',
+      message: (message || 'Urgent assistance required.') + (note ? ` [${note}]` : ''),
+      severity,
+      location: loc,
+      timestamp: Date.now(),
+      status: 'pending'
     };
 
+    setIsSending(true);
+    setTimeout(() => {
+      onSendSOS(sosAlert);
+      setIsSending(false);
+      setSent(true);
+    }, 1200);
+  };
+
+  const handleFaceVerifyComplete = () => {
+    setShowFaceScan(false);
+    if (currentUserLocation) {
+      performSend(currentUserLocation, "VERIFIED IDENTITY SCAN");
+    } else {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => performSend({ lat: pos.coords.latitude, lng: pos.coords.longitude }, "VERIFIED IDENTITY SCAN"),
+        () => performSend({ lat: 19.0760, lng: 72.8777 }, "VERIFIED IDENTITY SCAN [SIMULATED GPS]")
+      );
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
     if (currentUserLocation) {
       performSend(currentUserLocation);
     } else {
@@ -47,8 +60,8 @@ const CivilianPortal: React.FC<CivilianPortalProps> = ({ onSendSOS, currentUserL
         (err) => {
           window.alert("Location unavailable. Simulation fallback used.");
           performSend({
-            lat: 40.7128 + (Math.random() - 0.5) * 0.05,
-            lng: -74.0060 + (Math.random() - 0.5) * 0.05
+            lat: 19.0760 + (Math.random() - 0.5) * 0.05,
+            lng: 72.8777 + (Math.random() - 0.5) * 0.05
           });
         },
         { timeout: 10000 }
@@ -90,6 +103,14 @@ const CivilianPortal: React.FC<CivilianPortalProps> = ({ onSendSOS, currentUserL
     }`} role="main">
       <div className="absolute top-0 left-0 w-full h-1 bg-red-600" aria-hidden="true"></div>
       
+      {showFaceScan && (
+        <FaceScanner 
+          onComplete={handleFaceVerifyComplete}
+          onCancel={() => setShowFaceScan(false)}
+          title="Tactical Identity Scan"
+        />
+      )}
+
       <div className="space-y-6">
         <div className="text-center">
           <h2 className={`text-3xl font-black italic tracking-tighter mb-1 ${isLight ? 'text-zinc-900' : 'text-white'}`}>EMERGENCY SOS</h2>
@@ -100,6 +121,23 @@ const CivilianPortal: React.FC<CivilianPortalProps> = ({ onSendSOS, currentUserL
               GPS Locked: {currentUserLocation.lat.toFixed(4)}, {currentUserLocation.lng.toFixed(4)}
             </div>
           )}
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <button 
+            onClick={() => setShowFaceScan(true)}
+            className="w-full py-3 bg-blue-600/10 border border-blue-500/40 text-blue-400 rounded-xl flex items-center justify-center gap-3 text-[11px] font-black uppercase tracking-widest hover:bg-blue-600/20 transition-all active:scale-95"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+            Face Verify & Quick-Send
+          </button>
+          <div className="flex items-center gap-4">
+            <div className="flex-1 h-px bg-white/10"></div>
+            <span className="text-[9px] font-mono text-zinc-700 uppercase">Or Fill Manual Form</span>
+            <div className="flex-1 h-px bg-white/10"></div>
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">

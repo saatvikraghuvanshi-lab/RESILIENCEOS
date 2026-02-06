@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import FaceScanner from './FaceScanner';
 
 interface LandingPageProps {
   onLogin: () => void;
@@ -8,14 +9,12 @@ interface LandingPageProps {
 const ShieldLogo = ({ className = "w-16 h-16" }: { className?: string }) => (
   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
     <path d="M12 2L4 5V11C4 16.52 7.48 21.74 12 23C16.52 21.74 20 16.52 20 11V5L12 2Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-    {/* Internal Network Nodes */}
     <circle cx="12" cy="8.5" r="1" fill="white"/>
     <circle cx="8.5" cy="11.5" r="0.8" fill="white"/>
     <circle cx="15.5" cy="11.5" r="0.8" fill="white"/>
     <circle cx="8.5" cy="15.5" r="0.8" fill="white"/>
     <circle cx="15.5" cy="15.5" r="0.8" fill="white"/>
     <circle cx="12" cy="13.5" r="1" fill="white"/>
-    
     <path d="M12 8.5V13.5" stroke="white" strokeWidth="0.5"/>
     <path d="M12 8.5L8.5 11.5" stroke="white" strokeWidth="0.5"/>
     <path d="M12 8.5L15.5 11.5" stroke="white" strokeWidth="0.5"/>
@@ -23,8 +22,6 @@ const ShieldLogo = ({ className = "w-16 h-16" }: { className?: string }) => (
     <path d="M15.5 11.5L12 13.5" stroke="white" strokeWidth="0.5"/>
     <path d="M8.5 11.5V15.5" stroke="white" strokeWidth="0.5"/>
     <path d="M15.5 11.5V15.5" stroke="white" strokeWidth="0.5"/>
-
-    {/* Center Arrow */}
     <path d="M12 19V11" stroke="white" strokeWidth="2.5" strokeLinecap="round"/>
     <path d="M9 14L12 11L15 14" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
@@ -32,6 +29,7 @@ const ShieldLogo = ({ className = "w-16 h-16" }: { className?: string }) => (
 
 const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
+  const [showFaceScanner, setShowFaceScanner] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -47,6 +45,14 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
       
       {/* Animated Glow in background */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+      {showFaceScanner && (
+        <FaceScanner 
+          onComplete={onLogin} 
+          onCancel={() => setShowFaceScanner(false)} 
+          title="Quick Biometric Uplink"
+        />
+      )}
 
       <div className="w-full max-w-sm relative z-10">
         <header className="text-center mb-6 animate-in fade-in slide-in-from-top-4 duration-700">
@@ -118,6 +124,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onLogin }) => {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 via-white/20 to-blue-400/0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
             </button>
           </form>
+
+          {isLogin && (
+            <div className="mt-4 pt-4 border-t border-white/5">
+              <button 
+                onClick={() => setShowFaceScanner(true)}
+                className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border border-blue-500/30 text-blue-400 text-[9px] font-bold uppercase tracking-widest hover:bg-blue-500/10 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+                Biometric Uplink
+              </button>
+            </div>
+          )}
 
           <div className="mt-6 flex flex-col items-center gap-4">
             <div className="flex gap-1">
