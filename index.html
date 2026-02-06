@@ -68,21 +68,95 @@
             font-size: 9px !important;
         }
 
-        /* Layer Control Styling */
+        /* Layer Control Custom Tactical Styling - Relocated to Top Right */
         .leaflet-control-layers {
-            background: var(--bg-secondary) !important;
-            color: var(--text-primary) !important;
-            border: 1px solid var(--border-primary) !important;
-            border-radius: 8px !important;
+            background: #111111 !important;
+            color: #ffffff !important;
+            border: 2px solid rgba(255,255,255,0.15) !important;
+            border-radius: 12px !important;
             font-family: 'JetBrains Mono', monospace !important;
-            font-size: 10px !important;
+            font-size: 11px !important;
             text-transform: uppercase !important;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2) !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+            overflow: hidden;
+            margin-top: 20px !important;
+            margin-right: 20px !important;
         }
+
+        .leaflet-control-layers-toggle {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M3 7l9-4 9 4M3 12l9-4 9 4M3 17l9-4 9 4m-9 4v-9' /%3E%3C/svg%3E") !important;
+            background-size: 24px 24px !important;
+            width: 48px !important;
+            height: 48px !important;
+        }
+
         .leaflet-control-layers-expanded {
-            padding: 12px !important;
-            background: var(--bg-secondary) !important;
-            backdrop-filter: blur(8px);
+            padding: 16px !important;
+            min-width: 240px !important;
+            background: #111111 !important;
+        }
+
+        .leaflet-control-layers-base label, .leaflet-control-layers-overlays label {
+            display: flex !important;
+            align-items: center !important;
+            gap: 10px !important;
+            margin-bottom: 8px !important;
+            cursor: pointer;
+            color: #d1d5db;
+            font-weight: 700;
+        }
+
+        .leaflet-control-layers-separator {
+            height: 1px !important;
+            background: rgba(255,255,255,0.2) !important;
+            margin: 12px 0 !important;
+        }
+
+        /* Custom Checkbox/Radio styling for Leaflet */
+        .leaflet-control-layers input[type="radio"], 
+        .leaflet-control-layers input[type="checkbox"] {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid rgba(255,255,255,0.4);
+            background: transparent;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .leaflet-control-layers input[type="radio"] {
+            border-radius: 50%;
+        }
+
+        .leaflet-control-layers input[type="checkbox"] {
+            border-radius: 3px;
+        }
+
+        .leaflet-control-layers input:checked {
+            border-color: #3b82f6;
+            background: #3b82f6;
+        }
+
+        .leaflet-control-layers input:checked::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 6px;
+            height: 6px;
+            background: white;
+        }
+
+        .leaflet-control-layers input[type="radio"]:checked::after {
+            border-radius: 50%;
+        }
+
+        .leaflet-control-layers input[type="checkbox"]:checked::after {
+            width: 8px;
+            height: 8px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") no-repeat center;
+            background-size: contain;
         }
 
         /* Pulsing Animation for SOS */
@@ -123,6 +197,7 @@
     "react": "https://esm.sh/react@^19.2.4",
     "leaflet/": "https://esm.sh/leaflet@^1.9.4/",
     "leaflet": "https://esm.sh/leaflet@^1.9.4",
+    "leaflet.heat": "https://esm.sh/leaflet.heat@0.2.0",
     "idb": "https://esm.sh/idb@8.0.2",
     "react-dnd": "https://esm.sh/react-dnd@16.0.1",
     "react-dnd-html5-backend": "https://esm.sh/react-dnd-html5-backend@16.0.1"

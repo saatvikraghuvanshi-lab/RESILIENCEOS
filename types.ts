@@ -47,7 +47,8 @@ export enum AppMode {
   ADMIN = 'ADMIN',
   RESPONDER = 'RESPONDER',
   CIVILIAN = 'CIVILIAN',
-  TRAINING = 'TRAINING'
+  TRAINING = 'TRAINING',
+  STRATEGY = 'STRATEGY'
 }
 
 export interface UserStats {
@@ -65,4 +66,5 @@ export interface SystemState {
   userLocation: GeoLocation | null;
   theme: 'dark' | 'light';
   userStats: UserStats;
+  reliefSearchRadius: number;
 }

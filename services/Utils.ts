@@ -1,5 +1,6 @@
 
 import { GeoLocation } from '../types';
+import { NATIONAL_RESILIENCE_DATA, RegionData } from './RegionalData';
 
 /**
  * Calculates the Haversine distance between two points in km
@@ -29,3 +30,42 @@ export const formatTime = (ts: number): string => {
     hour12: false
   }).format(ts);
 };
+
+/**
+ * Buffer Zone Analysis Logic
+ * Basic logic: Higher density requires more facilities
+ */
+export function calculateResilienceScore(facilitiesCount: number, density: number): string {
+    if (density === 0) return "0.00";
+    const score = (facilitiesCount / density) * 1000; 
+    return score.toFixed(2);
+}
+
+/**
+ * Approximate mapping of region centers to find the nearest density baseline
+ */
+const REGION_CENTERS: Record<string, GeoLocation> = {
+  "North / Indo-Gangetic Plain": { lat: 26.8467, lng: 80.9462 },
+  "East": { lat: 22.5726, lng: 88.3639 },
+  "West": { lat: 19.0760, lng: 72.8777 },
+  "South": { lat: 12.9716, lng: 77.5946 },
+  "Himalayan & North-East": { lat: 26.1445, lng: 91.7362 }
+};
+
+export function getNearestRegionDensity(loc: GeoLocation): number {
+  let nearestRegion = NATIONAL_RESILIENCE_DATA.regions[0];
+  let minDist = Infinity;
+
+  NATIONAL_RESILIENCE_DATA.regions.forEach(region => {
+    const center = REGION_CENTERS[region.region];
+    if (center) {
+      const d = calculateDistance(loc, center);
+      if (d < minDist) {
+        minDist = d;
+        nearestRegion = region;
+      }
+    }
+  });
+
+  return nearestRegion.density_2026_est;
+}

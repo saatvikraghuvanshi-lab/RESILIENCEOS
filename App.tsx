@@ -8,9 +8,18 @@ import CivilianPortal from './components/CivilianPortal';
 import ResponderView from './components/ResponderView';
 import LandingPage from './components/LandingPage';
 import TrainingPortal from './components/TrainingPortal';
+import NationalResilienceMatrix from './components/NationalResilienceMatrix';
 import { generateMockAlerts, generateMockResponders, generateMockShelters } from './services/SimulationEngine';
 import { calculatePriority, categorizeIncident } from './services/TriageEngine';
 import { useOfflineSOS } from './hooks/useOfflineSOS';
+
+const ShieldIcon = ({ className = "w-6 h-6" }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <path d="M12 2L4 5V11C4 16.52 7.48 21.74 12 23C16.52 21.74 20 16.52 20 11V5L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 18V10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
+    <path d="M9 13L12 10L15 13" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
 
 const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,7 +38,8 @@ const App: React.FC = () => {
       readinessPoints: 150,
       goBagComplete: false,
       drillsCompleted: 2
-    }
+    },
+    reliefSearchRadius: 10000
   });
 
   const handleSyncOfflineAlerts = useCallback((offlineAlerts: SOSAlert[]) => {
@@ -121,6 +131,10 @@ const App: React.FC = () => {
     }));
   }, []);
 
+  const handleUpdateRadius = useCallback((radius: number) => {
+    setState(prev => ({ ...prev, reliefSearchRadius: radius }));
+  }, []);
+
   const handleCompleteDrill = useCallback(() => {
     setState(prev => ({
       ...prev,
@@ -151,17 +165,17 @@ const App: React.FC = () => {
       <div className={`h-screen w-full flex flex-col transition-colors duration-300 ${isLight ? 'bg-[#f4f4f5] text-[#18181b]' : 'bg-[#0a0a0a] text-[#e5e5e5]'}`}>
         <header className={`h-14 border-b flex items-center justify-between px-6 z-[60] shadow-sm ${isLight ? 'bg-white border-zinc-200' : 'bg-[#111] border-white/10'}`} role="banner">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center font-bold text-white italic" aria-hidden="true">R</div>
+            <ShieldIcon className="w-7 h-7 text-blue-500" />
             <h1 className="text-xl font-bold tracking-tighter font-mono">RESILIENCE<span className="text-blue-500">OS</span></h1>
           </div>
           
-          <nav className={`flex items-center gap-1 p-1 rounded-lg border ${isLight ? 'bg-zinc-100 border-zinc-200' : 'bg-black/40 border-white/5'}`} role="navigation" aria-label="Application View Switcher">
+          <nav className={`flex items-center gap-1 p-1 rounded-lg border overflow-x-auto custom-scrollbar no-scrollbar ${isLight ? 'bg-zinc-100 border-zinc-200' : 'bg-black/40 border-white/5'}`} role="navigation" aria-label="Application View Switcher">
             {(Object.keys(AppMode) as Array<keyof typeof AppMode>).map((m) => (
               <button
                 key={m}
                 onClick={() => setMode(AppMode[m as keyof typeof AppMode])}
                 aria-pressed={mode === AppMode[m as keyof typeof AppMode]}
-                className={`px-4 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all focus:ring-2 focus:ring-blue-500 outline-none ${
+                className={`px-3 py-1.5 rounded-md text-[10px] font-bold uppercase tracking-wider transition-all focus:ring-2 focus:ring-blue-500 outline-none whitespace-nowrap ${
                   mode === AppMode[m as keyof typeof AppMode] 
                   ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' 
                   : isLight ? 'text-zinc-500 hover:text-zinc-900' : 'text-zinc-500 hover:text-zinc-300'
@@ -185,9 +199,9 @@ const App: React.FC = () => {
               <div className={`w-1.5 h-1.5 rounded-full ${state.alerts.some(a => a.status === 'pending') ? 'bg-red-500 animate-pulse' : 'bg-green-500'}`}></div>
             </button>
 
-            <div className="h-6 w-[1px] bg-white/10"></div>
+            <div className="h-6 w-[1px] bg-white/10 hidden md:block"></div>
 
-            <div className="flex items-center gap-2" aria-label={state.isOffline ? 'System is offline' : 'System is online'}>
+            <div className="hidden md:flex items-center gap-2" aria-label={state.isOffline ? 'System is offline' : 'System is online'}>
               <span className={`w-2 h-2 rounded-full ${state.isOffline ? 'bg-red-500' : 'bg-green-500'}`}></span>
               <span className={`text-[10px] font-mono uppercase ${isLight ? 'text-zinc-500' : 'text-zinc-500'}`}>{state.isOffline ? 'Offline' : 'Online'}</span>
             </div>
@@ -198,7 +212,7 @@ const App: React.FC = () => {
                 aria-label="Open Settings"
                 className={`text-[10px] font-mono uppercase px-2 py-1 transition-colors flex items-center gap-1 ${isLight ? 'text-zinc-600 hover:text-zinc-900' : 'text-zinc-500 hover:text-white'}`}
               >
-                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                 Settings
               </button>
               <button 
@@ -245,23 +259,6 @@ const App: React.FC = () => {
                       <span className="text-2xl font-mono font-black text-green-600">84%</span>
                     </div>
                   </div>
-
-                  <div className="pt-2 border-t border-white/5">
-                    <h5 className="text-[8px] uppercase font-bold text-zinc-600 mb-2 font-mono">Network Health</h5>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500">
-                        <span>Mesh Uplink</span>
-                        <span className="text-green-500">ACTIVE</span>
-                      </div>
-                      <div className="w-full bg-zinc-800 h-1 rounded-full overflow-hidden">
-                        <div className="bg-green-500 h-full w-[92%]"></div>
-                      </div>
-                      <div className="flex items-center justify-between text-[9px] font-mono text-zinc-500">
-                        <span>Satellite Ping</span>
-                        <span className="text-zinc-500">24MS</span>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             )}
@@ -274,6 +271,7 @@ const App: React.FC = () => {
               state={state} 
               onRunSimulation={runSimulation}
               onUpdateAlert={updateAlertStatus}
+              onUpdateRadius={handleUpdateRadius}
             />
           )}
           {mode === AppMode.CIVILIAN && (
@@ -284,6 +282,9 @@ const App: React.FC = () => {
           )}
           {mode === AppMode.TRAINING && (
             <TrainingPortal stats={state.userStats} onCompleteDrill={handleCompleteDrill} />
+          )}
+          {mode === AppMode.STRATEGY && (
+            <NationalResilienceMatrix />
           )}
         </main>
 
