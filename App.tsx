@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { SpeedInsights } from '@vercel/speed-insights/react';
 import { AppMode, SystemState, SOSAlert, Responder, Shelter, Severity, GeoLocation } from './types';
 import Dashboard from './components/Dashboard';
 import CivilianPortal from './components/CivilianPortal';
@@ -334,6 +335,7 @@ const App: React.FC = () => {
           </div>
         </footer>
       </div>
+      <SpeedInsights />
     </DndProvider>
   );
 };
