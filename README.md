@@ -1,20 +1,44 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+Resilience-OS is a unified, predictive, and civilian-centric disaster management ecosystem. It replaces fragmented, reactive legacy systems with a single, real-time "Source of Truth" for national emergency services, responders, and the public. 
 
-This contains everything you need to run your app locally.
+Url- https://resilienceos.vercel.app/
 
-View your app in AI Studio: https://ai.studio/apps/drive/104s4gcuR-IvH4N3kqujiMGL_pvCHPQ_-
+⚡ The Problem
+India's disaster response currently faces a Readiness Gap:
+Fragmentation: Agencies work in silos without shared visibility.
+Latency: The "Golden Hour" is lost to manual coordination.
+Network Fragility: Traditional systems fail when cellular towers go down.
+Reactive Bias: Systems track what happened, not what will happen.
 
-## Run Locally
+🚀 The Solution: Resilience-OS
+Our platform operates across three critical layers:
+1. Strategic Command (Admin)
+Resilience Matrix: A live scoring engine that calculates infrastructure strain using population density and hazard intensity.
+Dynamic Resource Allocation: One-click dispatch for NDRF Units, Maritime Rescue, and Medical Teams.
 
-**Prerequisites:**  Node.js
+Temporal Simulations: A "Flood T+0H" slider to visualize disaster progression and preemptively clear evacuation routes.
+
+2. Tactical Response (Responders)
+Offline Mesh Uplink: A peer-to-peer (P2P) protocol allowing responders to sync data without cellular service.
+Real-Time GPS Tracking: Precise asset location mapping for specialized forces (Alpha-7, Rescue Boat 2).
+
+3. Public Safety (Civilian)
+SOS Terminal: High-priority distress signals with automated location locking.
+Resilience Academy: Gamified readiness training and "Go-Bag" checklists to ensure civilian preparedness before a crisis strikes.
+
+🛠️ Tech Stack
+Frontend: Next.js 14 (App Router), Tailwind CSS, Framer Motion.  
+Maps & Geo: Mapbox GL JS for live tactical overlays and resource mapping.  
+Backend & Auth: Vercel (Deployment), Supabase (Real-time WebSockets & Database), Clerk/Supabase Auth (RBAC).  
+Resilience: Offline-first PWA design and simulated WebRTC P2P Mesh Networking for low-connectivity environments.  
+Intelligence: AI-driven prediction engine for risk assessment and "Resilience Index" calculation.
+
+👥 The Team
+Saatvik Raghuvanshi — Lead Engineer / Mesh Protocols
+Dhruv Hajela — UI/UX Architect / Tactical Design
+Abhishek Singh Gaur — Systems Integration / Data Science  
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+
+
+
